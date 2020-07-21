@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.reservation.dao.StudentDao">
+
+    <update id="changePassword">
+        update student
+        set password=#{newPassword}, slat=#{slat}
+        where student_id = #{studentId}
+    </update>
+
+    <select id="hasUser" resultType="Student">
+        select * from student
+        where student_id=#{studentId}
+        and password=#{password}
+    </select>
+
+    <select id="hasUserAdmin" resultType="Student">
+        select * from student
+        where student_id = #{studentId}
+    </select>
+
+    <select id="getPassword" resultType="String">
+        select password from student where student_id = #{studentId};
+    </select>
+
+    <insert id="insertStudent">
+        insert into student
+        values(#{studentId}, #{name}, #{password}, #{gender}, #{isAdmin})
+    </insert>
+
+    <select id="isAdmin" resultType="Integer">
+        select count(*) from student
+        where student_id = #{studentId}
+        and is_admin = 1
+    </select>
+</mapper>

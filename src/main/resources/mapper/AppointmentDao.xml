@@ -1,0 +1,115 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.reservation.dao.AppointmentDao">
+
+    <insert id="insertRecord">
+        insert ignore into appointment
+        values (#{roomId}, #{roomPosition}, #{studentId}, #{classNum}, #{appointTime}, #{recordTime})
+    </insert>
+
+    <delete id="deleteRecord">
+        delete from appointment
+        where student_id=#{studentId}
+        and room_id=#{roomId}
+        and room_position=#{roomPosition}
+        and class_num=#{classNum}
+        and appoint_time=#{appointTime}
+    </delete>
+
+    <select id="queryBeforeAppointment" resultType="Appointment">
+        select * from appointment
+        where student_id = #{studentId}
+        and appoint_time <![CDATA[<=]]> #{nowTime}
+        order by record_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryFutureAppointment" resultType="Appointment">
+        select * from appointment
+        where student_id = #{studentId}
+        and appoint_time > #{nowTime}
+        order by record_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryFutureAppointNum" resultType="Integer">
+        select count(*) from appointment
+        where student_id = #{studentId}
+        and appoint_time > #{nowTime}
+    </select>
+
+    <select id="queryTwoPosition" resultType="Integer">
+        select count(*) from appointment
+        where student_id=#{studentId}
+        and class_num=#{classNum}
+        and appoint_time=#{appointTime}
+    </select>
+
+    <select id="queryIsAppoint" resultType="Integer">
+        select count(*) from appointment
+        where room_id=#{roomId}
+        and room_position=#{roomPosition}
+        and class_num=#{classNum}
+        and appoint_time=#{appointTime}
+    </select>
+
+    <select id="queryUsedPosition" resultType="Integer">
+        select room_position from appointment
+        where room_id=#{roomId}
+        and appoint_time=#{appointTime}
+        and class_num=#{classNum}
+    </select>
+
+    <select id="queryAllAppointment" resultType="Appointment">
+        select * from appointment
+        where student_id = #{studentId}
+        order by record_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAppointNum" resultType="Integer">
+        select count(*) from appointment
+        where student_id = #{studentId}
+        and appoint_time <![CDATA[<=]]> #{nowTime}
+    </select>
+
+    <select id="queryRoomAppointment" resultType="RecordDetail">
+        select a.room_id, a.room_position, a.student_id,
+        a.appoint_time, a.record_time, a.class_num,
+        s.name, s.gender
+        from appointment a
+        left join student s
+        on a.student_id = s.student_id
+        where a.room_id= #{roomId}
+        order by a.record_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAdminAppointment" resultType="Appointment">
+        select * from appointment
+        <where>
+            <if test="roomId != null">
+                room_id = #{roomId}
+            </if>
+            <if test="roomPosition != null">
+                and room_position = #{roomPosition}
+            </if>
+            <if test="studentId != null">
+                and student_id = #{studentId}
+            </if>
+            <if test="classNum != null">
+                and class_num = #{classNum}
+            </if>
+            <if test="appointTime != null">
+                and appoint_time = #{appointTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryRoomAppointNum" resultType="Integer">
+        select count(*) from appointment
+        where room_id = #{roomId}
+    </select>
+</mapper>

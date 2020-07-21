@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--    为dao接口提供sql语句， namespace接口名 -->
+<mapper namespace="org.reservation.dao.RoomDao">
+
+    <!-- 查询所有的机房 -->
+    <select id="queryAllRooms" resultType="Room">
+        select room_id, room_number from room
+        order by room_id
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="countRooms" resultType="Integer">
+        select count(*) from room;
+    </select>
+
+    <select id="queryRoomById" resultType="Room">
+        select * from room where room_id = #{roomId}
+    </select>
+
+    <insert id="addRooms">
+        insert into room
+        value (#{roomId}, #{roomNumber})
+    </insert>
+
+    <delete id="deleteRooms">
+        delete from room
+        where room_id = #{roomId}
+    </delete>
+</mapper>
